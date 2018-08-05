@@ -210,6 +210,8 @@ class Black_jack():
         self.player = player(player_name)
         self.player_total = 0
         self.dealer_total = 0
+        self.table_string = '\n|'+ ' ' * 58 +'|' 
+        self.table_wall = 30
     
     def menu(self):
         
@@ -351,8 +353,29 @@ class Black_jack():
         """
         """
         pass
-        
-        
+    
+    def deal(self):
+        self.player.discard_hand()
+        self.dealer.discard_hand()
+        self.deck.deal(self.player.hand, 2)
+        self.deck.deal(self.dealer.hand, 2)
+        self.player_total = self.get_value(self.player.hand)
+        self.dealer_total = self.get_value(self.dealer.hand)
+    
+    def table(self):
+        print('=-=' * 20,
+                  '\n|-Dealer-:'+ str(self.dealer_total) + ' ' * 46,'|',
+                  self.table_string* 4,
+                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
+                  
+                 
+                  '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
+                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * self.table_wall +'|',
+                  self.table_string * 2,
+                  '\n|' + ' ' * 48,'A)Hit Me!' +'|',
+                  '\n|'+ ' ' * 50,'B)Stay!' + '|',
+                  '\n|-Player-:' + str(self.player_total), ' ' * 38, 'Q)Quit.' + '|')
+                  
     def game(self):
         """
         Returns
@@ -361,27 +384,12 @@ class Black_jack():
         """
         self.deck.build_deck()
         self.deck.shuffle()
-        self.deck.deal(self.player.hand, 2)
-        self.deck.deal(self.dealer.hand, 2)
-        #self.player.sort_hand()
-        self.player_total = self.get_value(self.player.hand)
-        self.dealer_total = self.get_value(self.dealer.hand)
+        self.deal()
         table_string = '\n|'+ ' ' * 58 +'|' 
         table_wall = 30
         while True:
+            self.table()
             
-            print('=-=' * 20,
-                  '\n|-Dealer-:'+ str(self.dealer_total) + ' ' * 46,'|',
-                  table_string* 4,
-                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
-                  
-                 
-                  '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
-                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * table_wall +'|',
-                  table_string * 2,
-                  '\n|' + ' ' * 48,'A)Hit Me!' +'|',
-                  '\n|'+ ' ' * 50,'B)Stay!' + '|',
-                  '\n|-Player-:' + str(self.player_total), ' ' * 38, 'Q)Quit.' + '|')
                   
             print('=-=' * 20)
             choice = input()
@@ -392,13 +400,15 @@ class Black_jack():
                 self.deck.deal(self.player.hand, 1)
                 self.player_total = self.get_value(self.player.hand)
                 if self.player_total > 21:
+                    print('\033c')
+                    self.table()
                     print('Player Bust!')
-                   
                     input()
-                
+                    self.deal()
+                    
                 
             elif choice == 'b':
-                dealer_play
+                self.dealer_play()
                 
             elif choice == 'q':
                 while True:
