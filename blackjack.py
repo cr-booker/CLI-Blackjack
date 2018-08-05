@@ -2,6 +2,13 @@
 
 """
 Who doesnt like blackjack?
+Some people id imagine but youre not one 
+of the losers are you?
+
+A commandline implementation of black jack with 
+unicode cards and a funky ascii card table.
+pretty straight forward.q
+
 """
 from getpass import getpass as maskinput
 import operator
@@ -210,8 +217,6 @@ class Black_jack():
         self.player = player(player_name)
         self.player_total = 0
         self.dealer_total = 0
-        self.table_string = '\n|'+ ' ' * 58 +'|' 
-        self.table_wall = 30
     
     def menu(self):
         
@@ -361,21 +366,7 @@ class Black_jack():
         self.deck.deal(self.dealer.hand, 2)
         self.player_total = self.get_value(self.player.hand)
         self.dealer_total = self.get_value(self.dealer.hand)
-    
-    def table(self):
-        print('=-=' * 20,
-                  '\n|-Dealer-:'+ str(self.dealer_total) + ' ' * 46,'|',
-                  self.table_string* 4,
-                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
-                  
-                 
-                  '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
-                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * self.table_wall +'|',
-                  self.table_string * 2,
-                  '\n|' + ' ' * 48,'A)Hit Me!' +'|',
-                  '\n|'+ ' ' * 50,'B)Stay!' + '|',
-                  '\n|-Player-:' + str(self.player_total), ' ' * 38, 'Q)Quit.' + '|')
-                  
+       
     def game(self):
         """
         Returns
@@ -388,10 +379,30 @@ class Black_jack():
         table_string = '\n|'+ ' ' * 58 +'|' 
         table_wall = 30
         while True:
-            self.table()
             
+            print('=-=' * 20,
+                  '\n|-Dealer-:'+ str(self.dealer_total) + ' ' * 46,'|',
+                  table_string* 4,
+                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
+                  
+                 
+                  '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
+                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * table_wall +'|',
+                  table_string * 2,
+                  '\n|' + ' ' * 48,'A)Hit Me!' +'|',
+                  '\n|'+ ' ' * 50,'B)Stay!' + '|',
+                  '\n|-Player-:' + str(self.player_total), ' ' * 38, 'Q)Quit.' + '|')
                   
             print('=-=' * 20)
+            if self.player_total > 21:
+                table_wall -= 2
+                print('\nPlayer Bust!')
+                maskinput('\nPress Enter To Continue.')
+                table_wall = 30
+                self.deal()
+                print("\033c")
+                continue
+                
             choice = input()
             
             if choice == 'a':
@@ -399,12 +410,7 @@ class Black_jack():
                 table_wall -= 2
                 self.deck.deal(self.player.hand, 1)
                 self.player_total = self.get_value(self.player.hand)
-                if self.player_total > 21:
-                    print('\033c')
-                    self.table()
-                    print('Player Bust!')
-                    input()
-                    self.deal()
+            
                     
                 
             elif choice == 'b':
@@ -415,6 +421,7 @@ class Black_jack():
                     print('Are you sure you want to quit(Y/N)?')
                     quit_choice = input()
                     if quit_choice in ('y', 'yes', 'ya' , 'yeah'):
+                        print("\033c")
                         return
                     break
             print('\033c')
