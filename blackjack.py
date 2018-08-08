@@ -67,29 +67,18 @@ class Deck():
     """
     """
     def __init__(self):
-        self.deck = []
+        self.deck = [Card(rank,suit) for rank in Card.ranks for suit in Card.suits]
         
     def __str__(self):
         return [str(i) for i in self.deck]
         
     def __eq__(self, other):
         return len(self.deck) == len(other.deck)
-    
-    def build_deck(self):
-        """
-        Returns
-        -------
-        Output(None)
-        """
-        self.deck = [Card(rank,suit) for rank in Card.ranks for suit in Card.suits]
-        
-    def deck_count(self):
-        """
-        """
-        return len(self.deck)
         
     def shuffle(self):
         """
+        Scrambles the list of card objects.
+        
         Returns
         -------
         Output(None)
@@ -115,6 +104,8 @@ class Deck():
     
     def remove_card(self, card):
         """
+        Removes a card from self.deck list attribute.
+        
         Parameters
         ----------
         Card(Card Object)
@@ -129,6 +120,14 @@ class Deck():
         """
         Parameters
         ----------
+        position(int):
+           The index of the card to be removed.
+           
+        Returns
+        -------
+        Output(Card Object)
+            The card object in the self.deck list attribute
+            at the given index(position).
         """
         return self.deck.pop()
         
@@ -137,9 +136,12 @@ class Deck():
         Parameters
         ----------
         hand(list)
+            The list to append the cards to.
         
         num_of_cards(int)
-        
+            The Number of cards to remove from 
+            the self.deck list attribute and append to the 
+            hand parameter.
         
         Returns
         -------
@@ -364,24 +366,32 @@ class Black_jack():
         self.dealer.discard_hand()
         self.deck.deal(self.player.hand, 2)
         self.deck.deal(self.dealer.hand, 2)
-        self.player_total = self.get_value(self.player.hand)
-        self.dealer_total = self.get_value(self.dealer.hand)
+        #self.player_total = self.get_value(self.player.hand)
+        #self.dealer_total = self.get_value(self.dealer.hand)
+        
+    def clean_up(self):
+        """
+        """
+        used_cards = self.player.hand + self.dealer.hand
+        for card in used_cards:
+            self.deck.add_card(card)
        
     def game(self):
         """
         Returns
         -------
-        Output:
+        Output(None)
         """
-        self.deck.build_deck()
+        #self.deck.build_deck()
         self.deck.shuffle()
         self.deal()
         table_string = '\n|'+ ' ' * 58 +'|' 
         table_wall = 30
-        while True:
-            
+        self.player_total = self.get_value(self.player.hand)
+        self.dealer_total = self.get_value(self.dealer.hand)
+        while True:            
             print('=-=' * 20,
-                  '\n|-Dealer-:'+ str(self.dealer_total) + ' ' * 46,'|',
+                  '\n|-Dealer-: '+ str(self.dealer_total) + ' ' * 45,' | ',
                   table_string* 4,
                   '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
                   
@@ -403,16 +413,14 @@ class Black_jack():
                 print("\033c")
                 continue
                 
-            choice = input()
+            choice = input('>>>')
             
             if choice == 'a':
                 
                 table_wall -= 2
                 self.deck.deal(self.player.hand, 1)
                 self.player_total = self.get_value(self.player.hand)
-            
-                    
-                
+
             elif choice == 'b':
                 self.dealer_play()
                 
@@ -425,10 +433,6 @@ class Black_jack():
                         return
                     break
             print('\033c')
-
-        
-            
-    
 
 
 if __name__ == '__main__':
