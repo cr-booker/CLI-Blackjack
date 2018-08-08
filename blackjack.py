@@ -1,5 +1,4 @@
 #/usr/bin/env python3
-
 """
 Who doesnt like blackjack?
 Some people id imagine but youre not one 
@@ -7,8 +6,7 @@ of the losers are you?
 
 A commandline implementation of black jack with 
 unicode cards and a funky ascii card table.
-pretty straight forward.q
-
+pretty straight forward.
 """
 from getpass import getpass as maskinput
 import operator
@@ -16,6 +14,34 @@ import random
 
 class Card():
     """
+    Represents a standard playing card.
+        
+    Parameters
+    ----------
+    rank(String):
+        A string representing the card objects 
+        rank i.e 'King','Queen', etc.
+           
+    suit(String):
+        A string representing the card objects 
+        Suit i.e 'Club','Diamond', etc.
+        
+    Attributes
+    ----------
+    rank(String):
+        A string representing the card objects 
+        rank i.e 'King','Queen', etc.
+    
+    suit(String):
+         A string representing the card objects 
+         Suit i.e 'Club','Diamond', etc.
+    
+    unicode(String)
+        Unicode character for displaying the 
+        'front' of card, showing suit and rank.
+    
+    unicodeBack(String)
+        Unicode character for displaying the back of card.
     """
     suits = ('Spades', 'Hearts', 'Diamonds', 'Clubs', )
     
@@ -50,7 +76,6 @@ class Card():
                    "King of Diamonds": "\U0001F0CE", "King of Clubs": "\U0001F0DE"}	 
     
     def __init__(self, rank, suit):
-        
         self.rank = rank
         self.suit = suit
         self.unicode = self.uni_strings[str(self)]
@@ -65,6 +90,13 @@ class Card():
 
 class Deck():
     """
+    Represents standard 52 card playing card deck.
+    
+    Attributes
+    ----------
+    deck(List):
+        List of 52 card objects built using list comprehension
+    
     """
     def __init__(self):
         self.deck = [Card(rank,suit) for rank in Card.ranks for suit in Card.suits]
@@ -154,6 +186,23 @@ class Deck():
 class player():
     
     def __init__(self, player_id):
+        """
+        Represents an indivdual player
+        
+        Parameters
+        ----------
+        player_id(String):
+             Name assigned to player
+        
+        Attributes
+        ----------
+        player_id(String):
+            Name assigned to player
+        
+        hand(List):
+            List of cards owned by player
+            
+        """
         self.player_id = player_id
         self.hand = []
         
@@ -211,6 +260,9 @@ class Black_jack():
     """
     def __init__(self, player_name= 'Player'):
         """
+        Parameters
+        ----------
+        player_name(String)
         """
         self.values = dict({str(i): i for i in range(2, 11)}, Ace=1,
                             Jack=10, Queen=10, King=10)
