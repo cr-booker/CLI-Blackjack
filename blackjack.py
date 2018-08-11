@@ -187,7 +187,7 @@ class player():
     
     def __init__(self, player_id):
         """
-        Represents an indivdual player
+        Represents an player
         
         Parameters
         ----------
@@ -247,6 +247,7 @@ class player():
         Parameters
         ----------
         Card(string)
+            Card object to remove
            
         Returns
         -------
@@ -254,26 +255,55 @@ class player():
         """
         self.hand.remove(card)
         
+    def pop_card(self, position=-1):
+        """
+        Parameters
+        ----------
+        position(int):
+           The index of the card to be removed.
+           
+        Returns
+        -------
+        Output(Card Object)
+            The card object in the self.hand list attribute
+            at the given index(position).
+        """
+        return self.hand.pop()
+        
     
 class Black_jack():
     """
+    A game of blackjack
     """
     def __init__(self, player_name= 'Player'):
         """
         Parameters
         ----------
         player_name(String)
+        
+        Attributes
+        ----------
+        values(Dict):
+        
+        dealer(Player Obj):
+        
+        player(Player Obj):
         """
         self.values = dict({str(i): i for i in range(2, 11)}, Ace=1,
                             Jack=10, Queen=10, King=10)
         self.deck = Deck()
         self.dealer = player('Dealer')
         self.player = player(player_name)
-        self.player_total = 0
-        self.dealer_total = 0
+        self.table_wall = 30
+        #self.player_total = 0
+        #self.dealer_total = 0
     
     def menu(self):
-        
+        """
+        Returns
+        -------
+        Output:(None)
+        """
         while True:
             
             print("""
@@ -324,7 +354,9 @@ class Black_jack():
         Prints text explaing the rules and objective 
         of the game.
         
-        Output(None):
+        Returns
+        -------
+        Output:(None)
         """
         print(' _____________________________\n'
               '|  |  _ \ _   _| | ___  ___   |\n'
@@ -388,7 +420,12 @@ class Black_jack():
       
     def get_value(self, hand):
         """
+        Totals values of cards in players hand.
         
+        If the player's hand contains an ace,
+        the total is checked to see if it is less than 11
+        adding 10 if True(Aces are counted as 1 by default).
+
         Parameters
         ----------
         hand(list)
@@ -407,71 +444,80 @@ class Black_jack():
         if total <= 11:
             return total + 10
         return total
+    
+    def player_bust(self):
+        """
+        """
+        if self.get_value(self.player.hand) > 21:
+            print('\nPlayer Bust!')
+            maskinput('\nPress Enter To Continue.')
+            self.table_wall = 30
+            self.clean_up()
+            print("\033c")
+            return True
+    
+    def bj_check(self, hand):
+        """
+        """
         
+        
+            
     def dealer_action(self):
         """
+        Returns
+        -------
+        Output(None):
         """
         pass
-    
-    def deal(self):
-        self.player.discard_hand()
-        self.dealer.discard_hand()
-        self.deck.deal(self.player.hand, 2)
-        self.deck.deal(self.dealer.hand, 2)
-        #self.player_total = self.get_value(self.player.hand)
-        #self.dealer_total = self.get_value(self.dealer.hand)
-        
+   
     def clean_up(self):
         """
         """
         used_cards = self.player.hand + self.dealer.hand
         for card in used_cards:
             self.deck.add_card(card)
-       
+        self.deck.shuffle()
+        self.player.discard_hand()
+        self.dealer.discard_hand()
+        self.deck.deal(self.player.hand, 2)
+        self.deck.deal(self.dealer.hand, 2)
+            
     def game(self):
         """
         Returns
         -------
         Output(None)
         """
-        #self.deck.build_deck()
         self.deck.shuffle()
-        self.deal()
+        self.deck.deal(self.player.hand, 2)
+        self.deck.deal(self.dealer.hand, 2)
         table_string = '\n|'+ ' ' * 58 +'|' 
-        table_wall = 30
-        self.player_total = self.get_value(self.player.hand)
-        self.dealer_total = self.get_value(self.dealer.hand)
+        
+        p_wall = 37   #player_text 
         while True:            
             print('=-=' * 20,
-                  '\n|-Dealer-: '+ str(self.dealer_total) + ' ' * 45,' | ',
+                  '\n|-Dealer-:', self.get_value(self.dealer.hand) , ' ' * 45,'|',
                   table_string* 4,
                   '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
-                  
-                 
                   '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
-                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * table_wall +'|',
+                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * self.table_wall +'|',
                   table_string * 2,
                   '\n|' + ' ' * 48,'A)Hit Me!' +'|',
                   '\n|'+ ' ' * 50,'B)Stay!' + '|',
-                  '\n|-Player-:' + str(self.player_total), ' ' * 38, 'Q)Quit.' + '|')
+                  '\n|-Player-:',self.get_value(self.player.hand), ' ' * p_wall, 'Q)Quit.'+ '|')
                   
             print('=-=' * 20)
-            if self.player_total > 21:
-                table_wall -= 2
-                print('\nPlayer Bust!')
-                maskinput('\nPress Enter To Continue.')
-                table_wall = 30
-                self.deal()
-                print("\033c")
+            #if self.get_value(self.player.hand):
+                  
+            if self.player_bust():  
                 continue
                 
             choice = input('>>>')
             
-            if choice == 'a':
-                
-                table_wall -= 2
+            if choice == 'a': 
+                self.table_wall -= 2
                 self.deck.deal(self.player.hand, 1)
-                self.player_total = self.get_value(self.player.hand)
+                #self.player_total = self.get_value(self.player.hand)
 
             elif choice == 'b':
                 self.dealer_play()
@@ -486,9 +532,7 @@ class Black_jack():
                     break
             print('\033c')
 
-
 if __name__ == '__main__':
-    
     bj = Black_jack()
     bj.menu()
 
