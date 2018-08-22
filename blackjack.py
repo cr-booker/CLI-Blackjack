@@ -4,13 +4,14 @@ Who doesnt like blackjack?
 Some people id imagine but youre not one 
 of the losers are you?
 
-A commandline implementation of black jack with 
+A cli version of blackjack with 
 unicode cards and a funky ascii card table.
 pretty straight forward.
 """
 from getpass import getpass as maskinput
 import operator
 import random
+import time
 
 class Card():
     """
@@ -117,7 +118,6 @@ class Deck():
         """
         random.shuffle(self.deck)
     
-    
     def add_card(self,card):
         """
         Appends a card object to deck 
@@ -141,6 +141,7 @@ class Deck():
         Parameters
         ----------
         Card(Card Object)
+            Card object to remove from deck
         
         Returns
         -------
@@ -150,6 +151,8 @@ class Deck():
     
     def pop_card(self, position=-1):
         """
+        Removes and returns a card from the deck
+        
         Parameters
         ----------
         position(int):
@@ -165,6 +168,7 @@ class Deck():
         
     def deal(self, hand, num_of_cards):
         """
+        
         Parameters
         ----------
         hand(list)
@@ -247,7 +251,7 @@ class player():
         Parameters
         ----------
         Card(string)
-            Card object to remove
+            
            
         Returns
         -------
@@ -295,9 +299,8 @@ class Black_jack():
         self.dealer = player('Dealer')
         self.player = player(player_name)
         self.table_wall = 30
-        #self.player_total = 0
-        #self.dealer_total = 0
-    
+        self.table_string = '\n|'+ ' ' * 58 +'|' 
+      
     def menu(self):
         """
         Returns
@@ -413,11 +416,24 @@ class Black_jack():
               'until the total is 17 or more\n'             
               '\nThe Player wins if the dealer goes over 21 points(busts)\n'
               'or stays at a lesser total than the player.\n')
-
-             
+     
         maskinput('\nPress Enter To Return To Menu.')
         print('\033c')
-      
+        
+    def display_table(self):
+        p_wall = 37
+        print('=-=' * 20,
+               '\n|-Dealer-:', self.get_value(self.dealer.hand) , ' ' * 45,'|',
+               self.table_string* 4,
+               '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
+               '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
+               '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * self.table_wall +'|',
+               self.table_string * 2,
+               '\n|' + ' ' * 48,'A)Hit Me!' +'|',
+               '\n|'+ ' ' * 50,'B)Stay!' + '|',
+               '\n|-Player-:',self.get_value(self.player.hand), ' ' * p_wall, 'Q)Quit.'+ '|\n'+
+               '=-=' * 20)
+    
     def get_value(self, hand):
         """
         Totals values of cards in players hand.
@@ -447,6 +463,9 @@ class Black_jack():
     
     def player_bust(self):
         """
+        Returns
+        -------
+        Output(None)
         """
         if self.get_value(self.player.hand) > 21:
             print('\nPlayer Bust!')
@@ -455,12 +474,15 @@ class Black_jack():
             self.clean_up()
             print("\033c")
             return True
-    
-    def bj_check(self, hand):
+            
+    def blackjack(self, player):
         """
+        Returns
+        -------
+        Output(Bool)
         """
-        
-        
+        if self.get_value(self.player.hand) == 21:
+            pass
             
     def dealer_action(self):
         """
@@ -468,10 +490,38 @@ class Black_jack():
         -------
         Output(None):
         """
-        pass
-   
+        
+        while self.get_value(self.dealer.hand) <= 16:
+            self.deck.deal(self.dealer.hand, 1)
+            print('Dealer Hits.')
+            time.sleep(2)
+            print("\033c")
+            self.display_table()
+            if self.get_value(self.dealer.hand) > 21:
+                print('Dealer Busts!')
+                maskinput('\nPress Enter To Continue.')
+                self.table_wall = 30
+                self.clean_up()
+                print("\033c")
+        print('Dealer Stays at {}'.format(self.get_value(self.dealer.hand)))
+        maskinput('\nPress Enter To Continue.')
+        self.table_wall = 30
+        self.clean_up()
+        print("\033c")
+        
     def clean_up(self):
         """
+        Returns game to its original state.
+        
+        The Function is called after the round has ended in some fashion
+        (Bust, Blackjack, etc).
+        Both players hands are emptied and all cards
+        are returned to the deck, the deck is shuffled 
+        and two cards are delt to the player and dealer.
+        
+        Returns
+        -------
+        Output(None):
         """
         used_cards = self.player.hand + self.dealer.hand
         for card in used_cards:
@@ -490,28 +540,14 @@ class Black_jack():
         """
         self.deck.shuffle()
         self.deck.deal(self.player.hand, 2)
-        self.deck.deal(self.dealer.hand, 2)
+        self.deck.deal(self.dealer.hand, 1)
         table_string = '\n|'+ ' ' * 58 +'|' 
-        
-        p_wall = 37   #player_text 
+        #p_wall = 37   #player_text 
         while True:            
-            print('=-=' * 20,
-                  '\n|-Dealer-:', self.get_value(self.dealer.hand) , ' ' * 45,'|',
-                  table_string* 4,
-                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
-                  '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
-                  '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * self.table_wall +'|',
-                  table_string * 2,
-                  '\n|' + ' ' * 48,'A)Hit Me!' +'|',
-                  '\n|'+ ' ' * 50,'B)Stay!' + '|',
-                  '\n|-Player-:',self.get_value(self.player.hand), ' ' * p_wall, 'Q)Quit.'+ '|')
-                  
-            print('=-=' * 20)
-            #if self.get_value(self.player.hand):
-                  
+            self.display_table()
+            
             if self.player_bust():  
-                continue
-                
+                continue           
             choice = input('>>>')
             
             if choice == 'a': 
@@ -520,8 +556,9 @@ class Black_jack():
                 #self.player_total = self.get_value(self.player.hand)
 
             elif choice == 'b':
-                self.dealer_play()
-                
+                self.dealer_action()
+                continue
+                          
             elif choice == 'q':
                 while True:
                     print('Are you sure you want to quit(Y/N)?')
