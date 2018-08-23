@@ -96,8 +96,8 @@ class Deck():
     Attributes
     ----------
     deck(List):
-        List of 52 card objects built using list comprehension
-    
+        List of 52 card objects built using list 
+        comprehension
     """
     def __init__(self):
         self.deck = [Card(rank,suit) for rank in Card.ranks for suit in Card.suits]
@@ -188,25 +188,23 @@ class Deck():
               
               
 class player():
-    
+    """
+    Represents an player
+        
+    Parameters
+    ----------
+    player_id(String):
+         Name assigned to player
+        
+    Attributes
+    ----------
+    player_id(String):
+        Name assigned to player
+        
+    hand(List):
+        List of cards owned by player       
+    """   
     def __init__(self, player_id):
-        """
-        Represents an player
-        
-        Parameters
-        ----------
-        player_id(String):
-             Name assigned to player
-        
-        Attributes
-        ----------
-        player_id(String):
-            Name assigned to player
-        
-        hand(List):
-            List of cards owned by player
-            
-        """
         self.player_id = player_id
         self.hand = []
         
@@ -251,8 +249,9 @@ class player():
         Parameters
         ----------
         Card(string)
-            
-           
+            Card object to be removed from 
+            the deck.
+              
         Returns
         -------
         Output:(None)
@@ -261,6 +260,7 @@ class player():
         
     def pop_card(self, position=-1):
         """
+        Removes and returns card object from deck
         Parameters
         ----------
         position(int):
@@ -269,7 +269,7 @@ class player():
         Returns
         -------
         Output(Card Object)
-            The card object in the self.hand list attribute
+            The card object in the self.hand list 
             at the given index(position).
         """
         return self.hand.pop()
@@ -279,7 +279,7 @@ class Black_jack():
     """
     A game of blackjack
     """
-    def __init__(self, player_name= 'Player'):
+    def __init__(self, player_name='Player'):
         """
         Parameters
         ----------
@@ -475,14 +475,14 @@ class Black_jack():
             print("\033c")
             return True
             
-    def blackjack(self, player):
+    def blackjack(self, hand):
         """
         Returns
         -------
         Output(Bool)
         """
-        if self.get_value(self.player.hand) == 21:
-            pass
+        return self.get_value(hand) == 21
+
             
     def dealer_action(self):
         """
@@ -490,7 +490,6 @@ class Black_jack():
         -------
         Output(None):
         """
-        
         while self.get_value(self.dealer.hand) <= 16:
             self.deck.deal(self.dealer.hand, 1)
             print('Dealer Hits.')
@@ -503,7 +502,13 @@ class Black_jack():
                 self.table_wall = 30
                 self.clean_up()
                 print("\033c")
+                return
         print('Dealer Stays at {}'.format(self.get_value(self.dealer.hand)))
+        time.sleep(1)
+        if self.get_value(self.dealer.hand) > self.get_value(self.player.hand):
+            print('Dealer wins!')
+        else:
+            print(self.player.player_id, 'wins!')
         maskinput('\nPress Enter To Continue.')
         self.table_wall = 30
         self.clean_up()
@@ -540,7 +545,7 @@ class Black_jack():
         """
         self.deck.shuffle()
         self.deck.deal(self.player.hand, 2)
-        self.deck.deal(self.dealer.hand, 1)
+        self.deck.deal(self.dealer.hand, 2)
         table_string = '\n|'+ ' ' * 58 +'|' 
         #p_wall = 37   #player_text 
         while True:            
