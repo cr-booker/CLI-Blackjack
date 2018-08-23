@@ -7,6 +7,6 @@ of the losers are you?
 A command line version of blackjack with  
 unicode cards and a funky ascii card table.  
 pretty straight forward.  
-![Screenshot](images/Screenshot_1.png)
-![Screenshot](images/Screenshot_2.png)
-![Screenshot](images/Screenshot_3.png)
+![Screenshot](screenshots/screenshot_1.png)
+![Screenshot](screenshots/screenshot_2.png)
+![Screenshot](screenshots/screenshot_3.png)
