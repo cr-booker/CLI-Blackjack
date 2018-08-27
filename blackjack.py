@@ -189,7 +189,7 @@ class Deck():
               
 class player():
     """
-    Represents an player
+    Represents a player
         
     Parameters
     ----------
@@ -277,22 +277,22 @@ class player():
     
 class Black_jack():
     """
-    A game of blackjack
+    Represents a game of blackjack
+    
+    Parameters
+    ----------
+    player_name(String)
+        name for human player
+        
+    Attributes
+    ----------
+    values(Dict):
+        
+    dealer(Player Obj):
+        
+    player(Player Obj):
     """
     def __init__(self, player_name='Player'):
-        """
-        Parameters
-        ----------
-        player_name(String)
-        
-        Attributes
-        ----------
-        values(Dict):
-        
-        dealer(Player Obj):
-        
-        player(Player Obj):
-        """
         self.values = dict({str(i): i for i in range(2, 11)}, Ace=1,
                             Jack=10, Queen=10, King=10)
         self.deck = Deck()
@@ -303,6 +303,8 @@ class Black_jack():
       
     def menu(self):
         """
+        Displays ascii menu.
+        
         Returns
         -------
         Output:(None)
@@ -354,8 +356,8 @@ class Black_jack():
    
     def rules(self):
         """
-        Prints text explaing the rules and objective 
-        of the game.
+        Prints text explaining the rules and objective 
+        of blackjack.
         
         Returns
         -------
@@ -420,19 +422,19 @@ class Black_jack():
         maskinput('\nPress Enter To Return To Menu.')
         print('\033c')
         
-    def display_table(self):
-        p_wall = 37
-        print('=-=' * 20,
-               '\n|-Dealer-:', self.get_value(self.dealer.hand) , ' ' * 45,'|',
-               self.table_string* 4,
-               '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
-               '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
-               '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * self.table_wall +'|',
-               self.table_string * 2,
-               '\n|' + ' ' * 48,'A)Hit Me!' +'|',
-               '\n|'+ ' ' * 50,'B)Stay!' + '|',
-               '\n|-Player-:',self.get_value(self.player.hand), ' ' * p_wall, 'Q)Quit.'+ '|\n'+
-               '=-=' * 20)
+    def player_bust(self):
+        """
+        Returns
+        -------
+        Output(None)
+        """
+        if self.get_value(self.player.hand) > 21:
+            print('\nPlayer Bust!')
+            maskinput('\nPress Enter To Continue.')
+            self.table_wall = 30
+            self.clean_up()
+            print("\033c")
+            return True
     
     def get_value(self, hand):
         """
@@ -459,30 +461,15 @@ class Black_jack():
             return total
         if total <= 11:
             return total + 10
-        return total
-    
-    def player_bust(self):
-        """
-        Returns
-        -------
-        Output(None)
-        """
-        if self.get_value(self.player.hand) > 21:
-            print('\nPlayer Bust!')
-            maskinput('\nPress Enter To Continue.')
-            self.table_wall = 30
-            self.clean_up()
-            print("\033c")
-            return True
-            
-    def blackjack(self, hand):
+        return total   
+   
+    def blackjack_check(self, hand):
         """
         Returns
         -------
         Output(Bool)
         """
         return self.get_value(hand) == 21
-
             
     def dealer_action(self):
         """
@@ -493,7 +480,7 @@ class Black_jack():
         while self.get_value(self.dealer.hand) <= 16:
             self.deck.deal(self.dealer.hand, 1)
             print('Dealer Hits.')
-            time.sleep(2)
+            time.sleep(1)
             print("\033c")
             self.display_table()
             if self.get_value(self.dealer.hand) > 21:
@@ -534,10 +521,24 @@ class Black_jack():
         self.deck.shuffle()
         self.player.discard_hand()
         self.dealer.discard_hand()
-        self.deck.deal(self.player.hand, 2)
-        self.deck.deal(self.dealer.hand, 2)
-            
-    def game(self):
+        #self.deck.deal(self.player.hand, 2)
+        #self.deck.deal(self.dealer.hand, 2)
+        
+    def display_table(self):
+        p_wall = 37
+        print('=-=' * 20,
+               '\n|-Dealer-:', self.get_value(self.dealer.hand), ' ' * 45,'|',
+               self.table_string* 4,
+               '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
+               '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
+               '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * self.table_wall +'|',
+               self.table_string * 2,
+               '\n|' + ' ' * 48,'A)Hit Me!' +'|',
+               '\n|'+ ' ' * 50,'B)Stay!' + '|',
+               '\n|-Player-:',self.get_value(self.player.hand), ' ' * p_wall, 'Q)Quit.'+ '|\n'+
+               '=-=' * 20)
+               
+    def deal(self):
         """
         Returns
         -------
@@ -545,12 +546,20 @@ class Black_jack():
         """
         self.deck.shuffle()
         self.deck.deal(self.player.hand, 2)
-        self.deck.deal(self.dealer.hand, 2)
+        self.deck.deal(self.dealer.hand, 2) 
+        
+    def game(self):
+        """
+        Returns
+        -------
+        Output(None)
+        """
+       
         table_string = '\n|'+ ' ' * 58 +'|' 
         #p_wall = 37   #player_text 
+        self.deal()
         while True:            
-            self.display_table()
-            
+            self.display_table()  
             if self.player_bust():  
                 continue           
             choice = input('>>>')
@@ -562,6 +571,8 @@ class Black_jack():
 
             elif choice == 'b':
                 self.dealer_action()
+                self.clean_up()
+                self.deal()
                 continue
                           
             elif choice == 'q':
@@ -569,6 +580,7 @@ class Black_jack():
                     print('Are you sure you want to quit(Y/N)?')
                     quit_choice = input()
                     if quit_choice in ('y', 'yes', 'ya' , 'yeah'):
+                        self.clean_up()
                         print("\033c")
                         return
                     break
