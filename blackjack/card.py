@@ -111,8 +111,8 @@ class Deck():
     
     def add_card(self,card):
         """
-        Appends a card object to deck 
-        list attribute.
+        Appends a card to the deck 
+        list.
         
         Parameters
         ----------
@@ -127,7 +127,7 @@ class Deck():
     
     def remove_card(self, card):
         """
-        Removes a card from self.deck list attribute.
+        Removes a card from the deck list attribute.
         
         Parameters
         ----------
@@ -159,6 +159,8 @@ class Deck():
         
     def deal(self, hand, num_of_cards):
         """
+        pops and appends n number of cards
+        to player's hand. 
         
         Parameters
         ----------
@@ -263,10 +265,4 @@ class player():
             The card object in the self.hand list 
             at the given index(position).
         """
-        return self.hand.pop()
-
-
-
-
-    
-        
+        return self.hand.pop()    
