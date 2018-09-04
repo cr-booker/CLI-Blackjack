@@ -11,17 +11,17 @@ class Card():
     Parameters
     ----------
     rank(String):
-        A string representing the card objects 
+        A string representing the cards 
         rank i.e 'King','Queen', etc.
            
     suit(String):
-        A string representing the card objects 
+        A string representing the cards 
         Suit i.e 'Club','Diamond', etc.
         
     Attributes
     ----------
     rank(String):
-        A string representing the card objects 
+        A string representing the cards
         rank i.e 'King','Queen', etc.
     
     suit(String):
@@ -87,8 +87,7 @@ class Deck():
     Attributes
     ----------
     deck(List):
-        List of 52 card objects built using list 
-        comprehension
+        List of 52 card objects.
     """
     def __init__(self):
         self.deck = [Card(rank,suit) for rank in Card.ranks for suit in Card.suits]
@@ -101,7 +100,7 @@ class Deck():
         
     def shuffle(self):
         """
-        Scrambles the list of card objects.
+        Scrambles the list of cards.
         
         Returns
         -------
@@ -111,8 +110,7 @@ class Deck():
     
     def add_card(self,card):
         """
-        Appends a card to the deck 
-        list.
+        Appends a card to the deck.
         
         Parameters
         ----------
@@ -127,12 +125,12 @@ class Deck():
     
     def remove_card(self, card):
         """
-        Removes a card from the deck list attribute.
+        Removes a card from the deck.
         
         Parameters
         ----------
         Card(Card Object)
-            Card object to remove from deck
+            Card to remove from deck.
         
         Returns
         -------
@@ -142,7 +140,7 @@ class Deck():
     
     def pop_card(self, position=-1):
         """
-        Removes and returns a card from the deck
+        Removes and returns a card from the deck.
         
         Parameters
         ----------
@@ -152,7 +150,7 @@ class Deck():
         Returns
         -------
         Output(Card Object)
-            The card object in the self.deck list attribute
+            The card in the deck list
             at the given index(position).
         """
         return self.deck.pop()
@@ -182,20 +180,20 @@ class Deck():
               
 class player():
     """
-    Represents a player
+    Represents a player.
         
     Parameters
     ----------
     player_id(String):
-         Name assigned to player
+         Name assigned to player.
         
     Attributes
     ----------
     player_id(String):
-        Name assigned to player
+        Name assigned to player.
         
     hand(List):
-        List of cards owned by player       
+        List of cards owned by player   .    
     """   
     def __init__(self, player_id):
         self.player_id = player_id
@@ -207,11 +205,12 @@ class player():
         -------
         Output:(None)
         """
+        pass
         #sorted(self.hand.sort(key=operator.attrgetter('player.hand'))
     
     def discard_hand(self):
         """
-        Empties the self.hand list attribute.
+        Empties the player's hand.
         
         Returns
         -------
@@ -221,12 +220,13 @@ class player():
         
     def add_card(self, card):
         """
-        Appends a new card object 
-        to the self.hand attribute.
+        Appends a new card
+        to the player's hand.
         
         Parameters
         ----------
         card(string)
+            Card to be appended.
         
         Returns
         -------
@@ -236,13 +236,13 @@ class player():
         
     def remove_card(self, card):
         """
-        removes card object 
+        Removes card object 
         from self.hand list attribute.
         
         Parameters
         ----------
         Card(string)
-            Card object to be removed from 
+            Card to be removed from 
             the deck.
               
         Returns
@@ -253,7 +253,8 @@ class player():
         
     def pop_card(self, position=-1):
         """
-        Removes and returns card object from deck
+        Removes and returns card from deck.
+        
         Parameters
         ----------
         position(int):
@@ -262,7 +263,7 @@ class player():
         Returns
         -------
         Output(Card Object)
-            The card object in the self.hand list 
+            The card in the player's hand 
             at the given index(position).
         """
         return self.hand.pop()    
