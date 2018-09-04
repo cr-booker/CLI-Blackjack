@@ -1,12 +1,5 @@
 #/usr/bin/env python3
 """
-Who doesnt like blackjack?
-Some people id imagine but youre not one 
-of the losers are you?
-
-This a command line version of blackjack with 
-unicode cards and a funky ascii card table.
-pretty straight forward.
 """
 import operator
 import random
