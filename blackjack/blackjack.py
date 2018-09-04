@@ -8,15 +8,9 @@ This a command line version of blackjack with
 unicode cards and a funky ascii card table.
 pretty straight forward.
 """
-
 import card
 from getpass import getpass as maskinput
 import time
-
-input()
-
-
-
 
 class Black_jack():
     """
@@ -30,10 +24,13 @@ class Black_jack():
     Attributes
     ----------
     values(Dict):
+        Dictionary of Blackjack card values
         
     dealer(Player Obj):
         
+        
     player(Player Obj):
+
     """
     def __init__(self, player_name='Player'):
         self.values = dict({str(i): i for i in range(2, 11)}, Ace=1,
@@ -300,7 +297,8 @@ class Black_jack():
         self.deal()
         while True:            
             self.display_table()  
-            if self.player_bust():  
+            if self.player_bust():
+                self.deal()  
                 continue           
             choice = input('>>>')
             
