@@ -193,7 +193,7 @@ class player():
         Name assigned to player.
         
     hand(List):
-        List of cards owned by player   .    
+        List of cards owned by player.    
     """   
     def __init__(self, player_id):
         self.player_id = player_id
@@ -266,4 +266,4 @@ class player():
             The card in the player's hand 
             at the given index(position).
         """
-        return self.hand.pop()    
+        return self.hand.pop()
