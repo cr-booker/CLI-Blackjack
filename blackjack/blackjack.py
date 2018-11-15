@@ -10,6 +10,7 @@ pretty straight forward.
 """
 import card
 from getpass import getpass as maskinput
+import random
 import time
 
 class Black_jack():
@@ -170,20 +171,28 @@ class Black_jack():
      
     def deal(self):
         """
+        Shuffles deck and distributes 
+        cards to players.       
+        
         Returns
         -------
         Output(None)
-        """
+        """ 
         self.deck.shuffle()
+        self.deck.deal(self.dealer.hand, 2)
         self.deck.deal(self.player.hand, 2)
-        self.deck.deal(self.dealer.hand, 2) 
+        if self.blackjack_check(): 
+            self.clean_up()
+            self.deal()
+            print('\033c')
+        
     
     def get_value(self, hand):
         """
         Totals values of cards in players hand.
         
         If the player's hand contains an ace,
-        the total is checked to see if it is less than 11
+        the total is checked to verify it is less than 11
         adding 10 if True(Aces are counted as 1 by default).
 
         Parameters
@@ -206,13 +215,20 @@ class Black_jack():
         return total   
     
     def display_table(self):
+        """
+        Displays ascii table.
+        
+        Returns
+        -------
+        Output(None)
+        """
         p_wall = 37
         print('=-=' * 20,
                '\n|-Dealer-:', self.get_value(self.dealer.hand), ' '.rjust(45),'|',
                self.table_string* 4, #'\n|'+ ' ' * 58 +'|'
-               '\n|', ' ' * 22, ' '.join([i.unicode for i in self.dealer.hand]) , ' ' * 30 +'|',
+               '\n|', ' ' * 22, ' '.join([card.unicode for card in self.dealer.hand]) , ' ' * 30 +'|',
                '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
-               '\n|', ' ' * 22, ' '.join([i.unicode for i in self.player.hand]) , ' ' * self.table_wall +'|',
+               '\n|', ' ' * 22, ' '.join([card.unicode for card in self.player.hand]) , ' ' * self.table_wall +'|',
                self.table_string * 2,
                '\n|' + ' ' * 48,'A)Hit Me!' +'|',
                '\n|'+ ' ' * 50,'B)Stay!' + '|',
@@ -221,28 +237,39 @@ class Black_jack():
         
     def blackjack_check(self):
         """
+        Checks if either player has Blackjack.
+        
         Returns
         -------
         Output(Bool)
+            Returns True if either player has 
+            blackjack otherwise returns False.
         """
         blackjack = True
-        #self.display_table()  
-        if self.get_value(self.player.hand) == 21 & self.get_value(self.dealer.hand) == 21:
+        if self.get_value(self.player.hand) != 21 and self.get_value(self.dealer.hand) != 21:
+             blackjack = False
+             return blackjack
+        self.display_table()
+        if self.get_value(self.player.hand) == 21 and self.get_value(self.dealer.hand) == 21:
             print("Double Blackjack, Its a tie!")
         elif self.get_value(self.player.hand) == 21:
-           print("Blackjack! {} Wins!".format(self.player.player_id))
+            print("Blackjack! {} Wins!".format(self.player.player_id))
         elif self.get_value(self.dealer.hand) == 21:
-             print("Blackjack! {} Wins!".format(self.dealer.player_id))
-        else:
-            blackjack = False
-        if blackjack:
-            maskinput('\nPress Enter To Continue.')
-            print("\033c")
-            self.clean_up()
-            return True
-            
+            print("Blackjack! {} Wins!".format(self.dealer.player_id))  
+        time.sleep(1)
+        maskinput('\nPress Enter To Continue.')
+        return blackjack
+                  
     def bust_check(self,player):
         """
+        Checks if a players hand value is greater 
+        than 21.
+        
+        Parameters
+        ----------
+        player(Player Obj)
+            Players hand to check
+        
         Returns
         -------
         Output(Bool)
@@ -252,7 +279,6 @@ class Black_jack():
             maskinput('\nPress Enter To Continue.')
             self.table_wall = 30
             self.clean_up()
-            print("\033c")
             return True
        
     def dealer_action(self):
@@ -261,13 +287,14 @@ class Black_jack():
         -------
         Output(None):
         """
+        time.sleep(1)
         while self.get_value(self.dealer.hand) <= 16:
             self.deck.deal(self.dealer.hand, 1)
             print('{} Stays at {}'.format(self.player.player_id, self.get_value(self.player.hand)))
             print('Dealer Hits.')
             time.sleep(1)
             print("\033c")
-            self.display_table() #updates table
+            self.display_table() 
             if self.bust_check(self.dealer):
                 return
         print('Dealer Stays at {}'.format(self.get_value(self.dealer.hand)))
@@ -281,7 +308,6 @@ class Black_jack():
         maskinput('\nPress Enter To Continue.')
         self.table_wall = 30
         self.clean_up()
-        print("\033c")
     
     def clean_up(self):
         """
@@ -302,8 +328,7 @@ class Black_jack():
         self.dealer.discard_hand()
         for card in used_cards:
             self.deck.add_card(card)
-        self.deck.shuffle()
-        self.deal()
+        print("\033c")
         
     def game(self):
         """
@@ -311,19 +336,23 @@ class Black_jack():
         -------
         Output(None)
         """
-        self.deal()
-        self.blackjack_check()      
+        self.deal()  
         while True:
             self.display_table()  
             if self.bust_check(self.player): #checks if user busts
+                self.clean_up()
+                self.deal()
                 continue        
             choice = input('>>>')
             if choice == 'a': 
                 self.table_wall -= 2
                 self.deck.deal(self.player.hand, 1)
+                print('\033c')
+                continue
 
             elif choice == 'b':             
                 self.dealer_action()
+                self.deal()
                 continue
                           
             elif choice == 'q':
@@ -335,7 +364,7 @@ class Black_jack():
                         print("\033c")
                         return
                     break
-            print('\033c')#clears screen so new table can be printed 
+            print('\033c') #clears screen so new table can be printed 
 
 if __name__ == '__main__':
     bj = Black_jack()
