@@ -1,5 +1,9 @@
 #/usr/bin/env python3
 """
+This module contains a series of classes 
+to aid in the creation of a variety of traditional 
+card games.
+e.g, Blackjack, war, spades, etc.
 """
 import operator
 import random
@@ -79,7 +83,7 @@ class Card():
     def __eq__(self, other):
         return (self.rank, self.suit) == (other.rank, other.suit)
         
-
+        
 class Deck():
     """
     Represents standard 52 card playing card deck.
@@ -150,7 +154,7 @@ class Deck():
         Returns
         -------
         Output(Card Object)
-            The card in the deck list
+            The card in the deck
             at the given index(position).
         """
         return self.deck.pop()
