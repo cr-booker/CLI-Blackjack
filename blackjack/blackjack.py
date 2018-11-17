@@ -1,12 +1,12 @@
 #/usr/bin/env python3
 """
 Who doesnt like blackjack?
-Some people id imagine but youre not one 
+Some people id imagine but you're not one 
 of the losers are you?
 
-This a command line version of blackjack with 
-unicode cards and a funky ascii card table.
-pretty straight forward.
+This a pretty straight forward command line version 
+of blackjack with unicode cards and
+a funky ascii card table.
 """
 import card
 from getpass import getpass as maskinput
@@ -15,7 +15,7 @@ import time
 
 class Black_jack():
     """
-    Represents a game of blackjack
+    Represents a game of blackjack.
     
     Parameters
     ----------
@@ -25,16 +25,16 @@ class Black_jack():
     Attributes
     ----------
     values(Dict):
-        Dictionary of Blackjack card values
+        Dictionary of Blackjack card values.
         
     deck(Deck Obj)
-        
+        List of card objects.
         
     dealer(Player Obj):
-        
-        
+        Computer player.
+            
     player(Player Obj):
-    
+        Human player.
     
     table_string(String):
 
@@ -103,8 +103,10 @@ class Black_jack():
    
     def rules(self):
         """
-        Prints text explaining the rules and objective 
-        of blackjack.
+        Prints text explaining the rules 
+        and objective of blackjack.
+        
+        https://www.bicyclecards.com/how-to-play/blackjack/
         
         Returns
         -------
@@ -172,8 +174,12 @@ class Black_jack():
     def deal(self):
         """
         Shuffles deck and distributes 
-        cards to players.       
-        
+        cards to players. 
+        If either player
+        has blackjack, the winner is determined, 
+        all cards are returned to the deck and a new 
+        hand is delt.
+   
         Returns
         -------
         Output(None)
@@ -184,9 +190,7 @@ class Black_jack():
         if self.blackjack_check(): 
             self.clean_up()
             self.deal()
-            print('\033c')
         
-    
     def get_value(self, hand):
         """
         Totals values of cards in players hand.
@@ -198,7 +202,7 @@ class Black_jack():
         Parameters
         ----------
         hand(list)
-            List containing card objects to total
+            List of cards to total
         
         Returns
         -------
@@ -206,17 +210,15 @@ class Black_jack():
             Returns the total value of the cards 
             in players hand
         """
-        hand_ranks = [i.rank for i in hand]
-        total = sum([self.values[i] for i in hand_ranks])
-        if 'Ace' not in hand_ranks:
-            return total
-        if total <= 11:
+        ranks_in_hand = [i.rank for i in hand]
+        total = sum([self.values[i] for i in  ranks_in_hand])
+        if 'Ace' in  ranks_in_hand and total<= 11: #Ace Check
             return total + 10
         return total   
     
     def display_table(self):
         """
-        Displays ascii table.
+        Displays ascii cards/table.
         
         Returns
         -------
@@ -245,10 +247,8 @@ class Black_jack():
             Returns True if either player has 
             blackjack otherwise returns False.
         """
-        blackjack = True
         if self.get_value(self.player.hand) != 21 and self.get_value(self.dealer.hand) != 21:
-             blackjack = False
-             return blackjack
+             return False
         self.display_table()
         if self.get_value(self.player.hand) == 21 and self.get_value(self.dealer.hand) == 21:
             print("Double Blackjack, Its a tie!")
@@ -258,7 +258,7 @@ class Black_jack():
             print("Blackjack! {} Wins!".format(self.dealer.player_id))  
         time.sleep(1)
         maskinput('\nPress Enter To Continue.')
-        return blackjack
+        return True
                   
     def bust_check(self,player):
         """
@@ -278,7 +278,6 @@ class Black_jack():
             print('\n{} Bust!'.format(player.player_id))
             maskinput('\nPress Enter To Continue.')
             self.table_wall = 30
-            self.clean_up()
             return True
        
     def dealer_action(self):
@@ -290,7 +289,7 @@ class Black_jack():
         time.sleep(1)
         while self.get_value(self.dealer.hand) <= 16:
             self.deck.deal(self.dealer.hand, 1)
-            print('{} Stays at {}'.format(self.player.player_id, self.get_value(self.player.hand)))
+            #print('{} Stays at {}'.format(self.player.player_id, self.get_value(self.player.hand)))
             print('Dealer Hits.')
             time.sleep(1)
             print("\033c")
@@ -316,8 +315,7 @@ class Black_jack():
         The Function is called after the round has ended in some fashion
         (Bust, Blackjack, etc).
         Both players hands are emptied and all cards
-        are returned to the deck, the deck is shuffled 
-        and two cards are delt to the player and dealer.
+        are returned to the deck.
         
         Returns
         -------
@@ -339,32 +337,31 @@ class Black_jack():
         self.deal()  
         while True:
             self.display_table()  
-            if self.bust_check(self.player): #checks if user busts
+            if self.bust_check(self.player): 
                 self.clean_up()
                 self.deal()
-                continue        
-            choice = input('>>>')
+                self.display_table()  
+
+            choice = input('>>>').lower()
             if choice == 'a': 
                 self.table_wall -= 2
                 self.deck.deal(self.player.hand, 1)
-                print('\033c')
-                continue
-
+               
             elif choice == 'b':             
                 self.dealer_action()
                 self.deal()
-                continue
                           
             elif choice == 'q':
                 while True:
                     print('Are you sure you want to quit(Y/N)?')
-                    quit_choice = input()
-                    if quit_choice in ('y', 'yes', 'ya' , 'yeah'):
+                    quit_choice = input().lower()
+                    if quit_choice in ('y', 'yes', 'ya', 'yeah'):
                         self.clean_up()
-                        print("\033c")
                         return
-                    break
-            print('\033c') #clears screen so new table can be printed 
+                    elif quit_choice in ('n', 'no', 'nah', 'nope'):
+                        break
+                    continue
+            print('\033c')
 
 if __name__ == '__main__':
     bj = Black_jack()
