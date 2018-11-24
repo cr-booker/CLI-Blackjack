@@ -213,7 +213,9 @@ class Black_jack():
         ranks_in_hand = [i.rank for i in hand]
         total = sum([self.values[i] for i in  ranks_in_hand])
         if 'Ace' in  ranks_in_hand and total<= 11: #Ace Check
-            return total + 10
+            total += 10
+        if total <= 9:
+            return str(total).zfill(2)
         return total   
     
     def display_table(self):
@@ -225,17 +227,31 @@ class Black_jack():
         Output(None)
         """
         p_wall = 37
-        print('=-=' * 20,
-               '\n|-Dealer-:', self.get_value(self.dealer.hand), ' '.rjust(45),'|',
-               self.table_string* 4, #'\n|'+ ' ' * 58 +'|'
-               '\n|', ' ' * 22, ' '.join([card.unicode for card in self.dealer.hand]) , ' ' * 30 +'|',
-               '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
-               '\n|', ' ' * 22, ' '.join([card.unicode for card in self.player.hand]) , ' ' * self.table_wall +'|',
-               self.table_string * 2,
-               '\n|' + ' ' * 48,'A)Hit Me!' +'|',
-               '\n|'+ ' ' * 50,'B)Stay!' + '|',
-               '\n|-Player-:',self.get_value(self.player.hand), ' ' * p_wall, 'Q)Quit.'+ '|\n'+
-               '=-=' * 20)
+        #print('=-=' * 20,
+        #      '\n|-Dealer-:', self.get_value(self.dealer.hand), ' '.rjust(45),'|',
+        #      self.table_string* 4, #'\n|'+ ' ' * 58 +'|'
+        #      '\n|', ' ' * 22, ' '.join([card.unicode for card in self.dealer.hand]) , ' ' * 30 +'|',
+        #      '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
+        #      '\n|', ' ' * 22, ' '.join([card.unicode for card in self.player.hand]) , ' ' * self.table_wall +'|',
+        #      self.table_string * 2,
+        #      '\n|' + ' ' * 48,'A)Hit Me!' +'|',
+        #      '\n|'+ ' ' * 50,'B)Stay!' + '|',
+        #      '\n|-Player-:',self.get_value(self.player.hand), ' ' * p_wall, 'Q)Quit.'+ '|\n'+
+        #      '=-=' * 20)
+              
+              
+        print('=-=' * 20)
+        print('|-Dealer-:{}{:>48}'.format(self.get_value(self.dealer.hand),'|'))
+        print('{}'.format(self.table_string * 4))
+              #self.table_string* 4, #'\n|'+ ' ' * 58 +'|'
+              #'\n|', ' ' * 22, ' '.join([card.unicode for card in self.dealer.hand]) , ' ' * 30 +'|',
+              #'\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
+              #'\n|', ' ' * 22, ' '.join([card.unicode for card in self.player.hand]) , ' ' * self.table_wall +'|',
+              #self.table_string * 2,
+              #'\n|' + ' ' * 48,'A)Hit Me!' +'|',
+              #'\n|'+ ' ' * 50,'B)Stay!' + '|',
+              #'\n|-Player-:',self.get_value(self.player.hand), ' ' * p_wall, 'Q)Quit.'+ '|\n'+
+        print('=-=' * 20)
         
     def blackjack_check(self):
         """
@@ -289,7 +305,6 @@ class Black_jack():
         time.sleep(1)
         while self.get_value(self.dealer.hand) <= 16:
             self.deck.deal(self.dealer.hand, 1)
-            #print('{} Stays at {}'.format(self.player.player_id, self.get_value(self.player.hand)))
             print('Dealer Hits.')
             time.sleep(1)
             print("\033c")
@@ -330,6 +345,8 @@ class Black_jack():
         
     def game(self):
         """
+        The Main game method.
+        
         Returns
         -------
         Output(None)
@@ -343,15 +360,15 @@ class Black_jack():
                 self.display_table()  
 
             choice = input('>>>').lower()
-            if choice == 'a': 
+            if choice == 'a': #Player hits
                 self.table_wall -= 2
                 self.deck.deal(self.player.hand, 1)
                
-            elif choice == 'b':             
+            elif choice == 'b': #Player stays         
                 self.dealer_action()
                 self.deal()
                           
-            elif choice == 'q':
+            elif choice == 'q': #Player quits
                 while True:
                     print('Are you sure you want to quit(Y/N)?')
                     quit_choice = input().lower()
@@ -360,7 +377,6 @@ class Black_jack():
                         return
                     elif quit_choice in ('n', 'no', 'nah', 'nope'):
                         break
-                    continue
             print('\033c')
 
 if __name__ == '__main__':
