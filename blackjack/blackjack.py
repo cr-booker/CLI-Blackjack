@@ -46,7 +46,7 @@ class Black_jack():
         self.dealer = card.player('Dealer')
         self.player = card.player(player_name)
         self.table_wall = 30
-        self.table_string = '\n|'+ ' ' * 58 +'|' 
+        self.table_string = '\n|{:>49}|'  
       
     def menu(self):
         """
@@ -225,33 +225,18 @@ class Black_jack():
         Returns
         -------
         Output(None)
-        """
-        p_wall = 37
-        #print('=-=' * 20,
-        #      '\n|-Dealer-:', self.get_value(self.dealer.hand), ' '.rjust(45),'|',
-        #      self.table_string* 4, #'\n|'+ ' ' * 58 +'|'
-        #      '\n|', ' ' * 22, ' '.join([card.unicode for card in self.dealer.hand]) , ' ' * 30 +'|',
-        #      '\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
-        #      '\n|', ' ' * 22, ' '.join([card.unicode for card in self.player.hand]) , ' ' * self.table_wall +'|',
-        #      self.table_string * 2,
-        #      '\n|' + ' ' * 48,'A)Hit Me!' +'|',
-        #      '\n|'+ ' ' * 50,'B)Stay!' + '|',
-        #      '\n|-Player-:',self.get_value(self.player.hand), ' ' * p_wall, 'Q)Quit.'+ '|\n'+
-        #      '=-=' * 20)
-              
-              
-        print('=-=' * 20)
-        print('|-Dealer-:{}{:>48}'.format(self.get_value(self.dealer.hand),'|'))
-        print('{}'.format(self.table_string * 4))
-              #self.table_string* 4, #'\n|'+ ' ' * 58 +'|'
-              #'\n|', ' ' * 22, ' '.join([card.unicode for card in self.dealer.hand]) , ' ' * 30 +'|',
-              #'\n|', ' ' * 20, '=' *  13, ' ' * 21, '|',
-              #'\n|', ' ' * 22, ' '.join([card.unicode for card in self.player.hand]) , ' ' * self.table_wall +'|',
-              #self.table_string * 2,
-              #'\n|' + ' ' * 48,'A)Hit Me!' +'|',
-              #'\n|'+ ' ' * 50,'B)Stay!' + '|',
-              #'\n|-Player-:',self.get_value(self.player.hand), ' ' * p_wall, 'Q)Quit.'+ '|\n'+
-        print('=-=' * 20)
+        """        
+        print('=-=' * 17)
+        print("|-Dealer-:{}{:>38}|".format(self.get_value(self.dealer.hand), ''),end='')
+        print(self.table_string.format('') * 3)       
+        print('|{:>21}{}{:>25}|'.format('', ' '.join([card.unicode for card in self.dealer.hand]), ''))
+        print('|{0:>20}{1}{0:>}|'.format('', '=' * 11, self.table_string))
+        print('|{:>21}{}{:>25}|'.format('', ' '.join([card.unicode for card in self.player.hand]), ''))
+        print(self.table_string.format('') * 2) 
+        print('|{0:>40}A)Hit Me!|'.format(''))
+        print('|{0:>40}B)Stay!  |'.format(''))
+        print('|-Player-:{0}{1:>29}Q)Quit.  |'.format(self.get_value(self.player.hand),''))
+        print('=-=' * 17)
         
     def blackjack_check(self):
         """
@@ -290,7 +275,7 @@ class Black_jack():
         -------
         Output(Bool)
         """
-        if self.get_value(player.hand) > 21:
+        if int(self.get_value(player.hand)) > 21:
             print('\n{} Bust!'.format(player.player_id))
             maskinput('\nPress Enter To Continue.')
             self.table_wall = 30
