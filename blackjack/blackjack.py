@@ -5,8 +5,8 @@ Some people id imagine but you're not one
 of the losers are you?
 
 This a pretty straight forward command line version 
-of blackjack with unicode cards and
-a funky ascii card table.
+of blackjack with unicode playing cards and
+a funky card table.
 """
 import card
 from getpass import getpass as maskinput
@@ -50,7 +50,7 @@ class Black_jack():
       
     def menu(self):
         """
-        Displays ascii menu.
+        Displays menu.
         
         Returns
         -------
@@ -220,7 +220,7 @@ class Black_jack():
     
     def display_table(self):
         """
-        Displays ascii cards/table.
+        Displays cards/table.
         
         Returns
         -------
@@ -229,10 +229,9 @@ class Black_jack():
         print('=-=' * 17)
         print("|-Dealer-:{}{:>38}|".format(self.get_value(self.dealer.hand), ''),end='')
         print(self.table_string.format('') * 3)       
-        print('|{:>21}{}{:>25}|'.format('', ' '.join([card.unicode for card in self.dealer.hand]), ''))
-        print('|{0:>20}{1}{0:>}|'.format('', '=' * 11, self.table_string))
-        print('|{:>21}{}{:>25}|'.format('', ' '.join([card.unicode for card in self.player.hand]), ''))
-        print(self.table_string.format('') * 2) 
+        print('|{:>19}{}{:>25}|'.format('', ' '.join([card.unicode for card in self.dealer.hand]), ''))
+        print('|{0:>18}{1}{0:>19}|'.format('', '=' * 12, self.table_string))
+        print('|{:>19}{}{:>25}|'.format('', ' '.join([card.unicode for card in self.player.hand]), ''))
         print('|{0:>40}A)Hit Me!|'.format(''))
         print('|{0:>40}B)Stay!  |'.format(''))
         print('|-Player-:{0}{1:>29}Q)Quit.  |'.format(self.get_value(self.player.hand),''))
@@ -274,6 +273,8 @@ class Black_jack():
         Returns
         -------
         Output(Bool)
+            Returns True if the players hand is greater
+            than 21 else returns None.
         """
         if int(self.get_value(player.hand)) > 21:
             print('\n{} Bust!'.format(player.player_id))
@@ -288,7 +289,7 @@ class Black_jack():
         Output(None):
         """
         time.sleep(1)
-        while self.get_value(self.dealer.hand) <= 16:
+        while int(self.get_value(self.dealer.hand)) <= 16:
             self.deck.deal(self.dealer.hand, 1)
             print('Dealer Hits.')
             time.sleep(1)
