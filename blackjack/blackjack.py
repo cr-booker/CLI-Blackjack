@@ -45,7 +45,8 @@ class Black_jack():
         self.deck = card.Deck()
         self.dealer = card.player('Dealer')
         self.player = card.player(player_name)
-        self.table_wall = 30
+        self.player_wall = 28
+        self.dealer_wall = 28
         self.table_string = '\n|{:>49}|'  
       
     def menu(self):
@@ -82,11 +83,9 @@ class Black_jack():
              """)
             choice = input('>>>')
             if choice == '1':
-               print("\033c")
-               self.game()
+               self.game_start()
                
             elif choice == '2':
-                print("\033c")
                 self.rules()
                
             elif choice == '3':
@@ -96,8 +95,7 @@ class Black_jack():
                      "| |_| | (_) | (_) | (_| | |_) | |_| |  __/_|\n"
                      " \____|\___/ \___/ \__,_|_.__/ \__, |\___(_)\n"
                      "                               |___/")
-                return
-                
+                return               
             else:
                 print("\033c")
    
@@ -112,6 +110,7 @@ class Black_jack():
         -------
         Output:(None)
         """
+        print("\033c")
         print(' _____________________________\n'
               '|  |  _ \ _   _| | ___  ___   |\n'
               '|  | |_) | | | | |/ _ \/ __|  |\n'
@@ -226,12 +225,13 @@ class Black_jack():
         -------
         Output(None)
         """        
+        print("\033c")
         print('=-=' * 17)
         print("|-Dealer-:{}{:>38}|".format(self.get_value(self.dealer.hand), ''),end='')
         print(self.table_string.format('') * 3)       
-        print('|{:>19}{}{:>25}|'.format('', ' '.join([card.unicode for card in self.dealer.hand]), ''))
+        print('|{0:>18}{1}{0:>{2}}|'.format('', ' '.join([card.unicode for card in self.dealer.hand]),self.dealer_wall))
         print('|{0:>18}{1}{0:>19}|'.format('', '=' * 12, self.table_string))
-        print('|{:>19}{}{:>25}|'.format('', ' '.join([card.unicode for card in self.player.hand]), ''))
+        print('|{0:>18}{1}{0:>{2}}|'.format('', ' '.join([card.unicode for card in self.player.hand]), self.player_wall))
         print('|{0:>40}A)Hit Me!|'.format(''))
         print('|{0:>40}B)Stay!  |'.format(''))
         print('|-Player-:{0}{1:>29}Q)Quit.  |'.format(self.get_value(self.player.hand),''))
@@ -279,7 +279,6 @@ class Black_jack():
         if int(self.get_value(player.hand)) > 21:
             print('\n{} Bust!'.format(player.player_id))
             maskinput('\nPress Enter To Continue.')
-            self.table_wall = 30
             return True
        
     def dealer_action(self):
@@ -293,7 +292,7 @@ class Black_jack():
             self.deck.deal(self.dealer.hand, 1)
             print('Dealer Hits.')
             time.sleep(1)
-            print("\033c")
+            self.dealer_wall -= 2
             self.display_table() 
             if self.bust_check(self.dealer):
                 return
@@ -306,8 +305,6 @@ class Black_jack():
         else:
             print(self.player.player_id, 'wins!')
         maskinput('\nPress Enter To Continue.')
-        self.table_wall = 30
-        self.clean_up()
     
     def clean_up(self):
         """
@@ -322,6 +319,8 @@ class Black_jack():
         -------
         Output(None):
         """
+        self.dealer_wall = 28
+        self.player_wall = 28
         used_cards = self.player.hand + self.dealer.hand
         self.player.discard_hand()
         self.dealer.discard_hand()
@@ -329,7 +328,7 @@ class Black_jack():
             self.deck.add_card(card)
         print("\033c")
         
-    def game(self):
+    def game_start(self):
         """
         The Main game method.
         
@@ -337,6 +336,7 @@ class Black_jack():
         -------
         Output(None)
         """
+        print("\033c")
         self.deal()  
         while True:
             self.display_table()  
@@ -347,11 +347,12 @@ class Black_jack():
 
             choice = input('>>>').lower()
             if choice == 'a': #Player hits
-                self.table_wall -= 2
+                self.player_wall -= 2
                 self.deck.deal(self.player.hand, 1)
                
             elif choice == 'b': #Player stays         
                 self.dealer_action()
+                self.clean_up()
                 self.deal()
                           
             elif choice == 'q': #Player quits
