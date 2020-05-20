@@ -2,11 +2,10 @@
 """
 Who doesnt like blackjack?
 Some people id imagine but you're not one 
-of the losers are you?
+of those losers are you?
 
 This a pretty straight forward command line version 
-of blackjack with unicode playing cards and
-a funky card table.
+of blackjack with unicode playing cards.
 """
 import card
 from getpass import getpass as maskinput
